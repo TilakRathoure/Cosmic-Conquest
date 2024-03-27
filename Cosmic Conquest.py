@@ -28,12 +28,18 @@ block_update=0.3
 playerX_change=0
 
 
-enemyImg=pygame.image.load("./images/space-ship.png")
+setimg=pygame.image.load
 
-enemyX=random.randint(0,836)
-enemyY=random.randint(50,150)
+enemyImg=[setimg("./images/space-ship.png"),setimg("./images/space-ship.png"),setimg("./images/spaceship (3).png"),setimg("./images/spaceship (3).png"),setimg("./images/ufo.png"),setimg("./images/ufo.png")]
+enemyX=[]
+enemyY=[]
+enemyChange=[]
+numberofenemy=6
 
-enemyChange=0.4
+for i in range(numberofenemy):
+    enemyChange.append(0.4)
+    enemyX.append(random.randint(0,836))
+    enemyY.append(random.randint(0,50))
 
 bulletX=0
 bulletY=0
@@ -43,7 +49,7 @@ closewindow=False
 white=(255,255,255)
 
 
-Score=0
+Score=19
 
 fonnt=pygame.font.Font('freesansbold.ttf',32)
 textX=10
@@ -57,8 +63,8 @@ def showscore(x):
 
 
 
-def enemy(x,y):
-    gameWindow.blit(enemyImg,(x,y))
+def enemy(x,y,i):
+    gameWindow.blit(enemyImg[i],(x,y))
 
 def player(x,y):
     gameWindow.blit(playerImg,(x,y))
@@ -75,7 +81,7 @@ def collision(x1,y1,x2,y2):
     else:
         return False
     
-    
+
     
 
 while not closewindow:
@@ -107,17 +113,36 @@ while not closewindow:
             if event.key==pygame.K_LEFT or  event.key==pygame.K_RIGHT:
                 playerX_change=0
     
+    for i in range(numberofenemy):
+        
+        
+        if enemyX[i]>836:
+            enemyX[i]=836
+            enemyChange[i]=-0.4
+            enemyY[i]+=20
     
+        elif enemyX[i]<0:
+            enemyX[i]=0
+            enemyChange[i]=0.4
+            enemyY[i]+=20
+            
+        if enemyY[i]>=430:
+            for j in range(numberofenemy):
+                enemyY[j]=2000
+                youlost()
+            break
+        
+        enemyX[i]+=enemyChange[i]
+        check=collision(enemyX[i],enemyY[i],bulletX,bulletY)
     
-    if enemyX>836:
-        enemyX=836
-        enemyChange=-0.4
-        enemyY+=20
-    
-    elif enemyX<0:
-        enemyX=0
-        enemyChange=0.4
-        enemyY+=20
+        if check==True:
+            Score+=1
+            bulletY=-100
+            bulletX=-100
+            state="fire"
+            enemyY[i]=-64
+        
+        enemy(enemyX[i],enemyY[i],i)
         
                
                 
@@ -132,19 +157,16 @@ while not closewindow:
         state="fire"
                   
     playerX+=playerX_change
-    enemyX+=enemyChange
     bulletY-=1.5
     
-    check=collision(enemyX,enemyY,bulletX,bulletY)
-    if check==True:
-        Score+=1
-        bulletY=0
-        bulletX=0
-        state="fire"
+    if Score==20:
+        for i in range(numberofenemy):
+            enemyY[i]=-200000
+        youwon()
+    
     
     
     showscore(Score)
     player(playerX,playerY)
     fire(bulletX,bulletY)
-    enemy(enemyX,enemyY)
     pygame.display.update()
