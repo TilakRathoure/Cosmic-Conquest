@@ -81,7 +81,13 @@ def collision(x1,y1,x2,y2):
     else:
         return False
     
-
+def youlost():
+    lost=pygame.font.Font('freesansbold.ttf',64).render("Game Over! You Lost",True,white)
+    gameWindow.blit(lost,(100,250))
+    
+def youwon():
+    lost=pygame.font.Font('freesansbold.ttf',64).render("Good! You Won",True,white)
+    gameWindow.blit(lost,(160,250))
     
 
 while not closewindow:
