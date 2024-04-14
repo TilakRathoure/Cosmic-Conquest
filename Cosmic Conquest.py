@@ -49,7 +49,7 @@ closewindow=False
 white=(255,255,255)
 
 
-Score=19
+Score=0
 
 fonnt=pygame.font.Font('freesansbold.ttf',32)
 textX=10
